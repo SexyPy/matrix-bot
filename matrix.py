@@ -1,5 +1,7 @@
 from services.account import Account
 from services.config import Config
+import signal
+import time
 
 class MatrixPy:
         def __init__(self) -> None:
@@ -12,7 +14,18 @@ class MatrixPy:
         def login(self):
             return self.account.data
 
+        def logout(self):
+            self.account.close()
+            exit(0)
+
+        def handler(self, signum, frame):
+            self.logout()
 
 if __name__ == '__main__':
     matrix = MatrixPy()
-    print(matrix.login())
+    login = matrix.login()
+
+    signal.signal(signal.SIGINT, matrix.handler)
+
+    while True:
+        time.sleep(0.1)
